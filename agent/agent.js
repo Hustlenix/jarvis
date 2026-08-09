@@ -1,7 +1,7 @@
 import { Agent, OpenAIChatCompletionsModel, run } from '@openai/agents';
 import OpenAI from 'openai';
 
-import { addEmojiReaction } from './tools/index.js';
+import { addEmojiReaction, fetchUrl, setReminder, topNews, weather, webSearch } from './tools/index.js';
 
 const client = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -35,12 +35,20 @@ having conversations, and being generally useful in Slack.
 Always react to every user message with \`add_emoji_reaction\` before responding. \
 Pick any Slack emoji that reflects the *topic* or *tone* of the message — be creative and specific \
 (e.g. \`dog\` for dog topics, \`books\` for learning, \`wave\` for greetings). \
-Vary your picks across a thread; don't repeat the same emoji.`;
+Vary your picks across a thread; don't repeat the same emoji.
+
+## TOOLS
+- \`web_search\`: use for current facts, news events, anything you are unsure about or that changes over time
+- \`fetch_url\`: use when the user shares a link and wants to know what is on the page
+- \`get_weather\`: use for any weather question, anywhere in the world
+- \`get_top_news\`: use when the user asks what is happening in tech or wants top stories
+- \`set_reminder\`: use when the user asks to be reminded about something later; the reminder posts into the conversation after the requested minutes
+- If a tool fails or returns an empty result, tell the user what happened instead of inventing an answer.`;
 
 export const jarvisAgent = new Agent({
   name: 'Jarvis',
   instructions: SYSTEM_PROMPT,
-  tools: [addEmojiReaction],
+  tools: [addEmojiReaction, webSearch, fetchUrl, weather, topNews, setReminder],
   model: new OpenAIChatCompletionsModel(client, modelName),
 });
 

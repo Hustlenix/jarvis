@@ -13,6 +13,9 @@ with emoji. It also has a few slash commands for quick stuff.
 - **AI chat** — mention `@Jarvis` in a channel or send a DM. Replies stream into
   the thread with a "thinking…" status, and Jarvis remembers the last few
   messages so the conversation flows.
+- **Agent tools** — Jarvis can search the web, fetch a URL you share, check the
+  weather anywhere, list today's top Hacker News stories, and set reminders
+  right from the conversation.
 - **Slash commands**
 
   | Command | What it does |
