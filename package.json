@@ -1,0 +1,25 @@
+{
+  "name": "jarvis",
+  "version": "0.1.0",
+  "description": "Jarvis — an AI Slack bot for the Hack Club Stardance challenge",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "check": "npx tsc --checkJs --noEmit --skipLibCheck --esModuleInterop --target esnext --module nodenext --moduleResolution nodenext index.js",
+    "start": "node index.js",
+    "lint": "npx @biomejs/biome check .",
+    "lint:fix": "npx @biomejs/biome check --write .",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@openai/agents": "^0.14.2",
+    "@slack/bolt": "^5.0.0",
+    "axios": "^1.7.9",
+    "dotenv": "~17.4.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.6",
+    "@slack/cli-hooks": "^2.0.0",
+    "typescript": "^7.0.2"
+  }
+}

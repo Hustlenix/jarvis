@@ -1,0 +1,12 @@
+# Environment
+.env*
+!.env.sample
+
+# Node.js
+node_modules/
+
+# Logs
+logs/
+
+# macOS
+.DS_Store
