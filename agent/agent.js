@@ -1,6 +1,14 @@
-import { Agent, run } from '@openai/agents';
+import { Agent, OpenAIChatCompletionsModel, run } from '@openai/agents';
+import OpenAI from 'openai';
 
 import { addEmojiReaction } from './tools/index.js';
+
+const client = new OpenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+  baseURL: process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta/openai/',
+});
+
+const modelName = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite';
 
 const SYSTEM_PROMPT = `\
 You are Jarvis, a friendly Slack assistant. You help people by answering questions, \
@@ -33,7 +41,7 @@ export const jarvisAgent = new Agent({
   name: 'Jarvis',
   instructions: SYSTEM_PROMPT,
   tools: [addEmojiReaction],
-  model: 'gpt-4.1-mini',
+  model: new OpenAIChatCompletionsModel(client, modelName),
 });
 
 /**

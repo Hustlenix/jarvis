@@ -34,7 +34,7 @@ You'll need:
 
 - Node.js 20+
 - A Slack app with Socket Mode enabled (see below)
-- An OpenAI API key (for the AI chat — the slash commands work without it)
+- A Google AI Studio API key (free at [aistudio.google.com](https://aistudio.google.com))
 
 ### 1. Set up the Slack app
 
@@ -55,7 +55,7 @@ Then fill in the three values in `.env`:
 
 - `SLACK_BOT_TOKEN` — the `xoxb-` token from step 1
 - `SLACK_APP_TOKEN` — the `xapp-` token from step 1
-- `OPENAI_API_KEY` — your OpenAI key
+- `GEMINI_API_KEY` — your Google AI Studio key (for the AI chat — the slash commands work without it)
 
 ### 3. Run it
 

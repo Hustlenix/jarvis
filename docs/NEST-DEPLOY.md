@@ -41,9 +41,9 @@ nano .env
 Paste in the same values you use locally:
 
 ```
-SLACK_BOT_TOKEN=xoxb-...   # Bot User OAuth Token
-SLACK_APP_TOKEN=xapp-...   # App-Level Token (connections:write)
-OPENAI_API_KEY=sk-...      # OpenAI key (for the AI chat feature)
+SLACK_BOT_TOKEN=xoxb-...      # Bot User OAuth Token
+SLACK_APP_TOKEN=xapp-...      # App-Level Token (connections:write)
+GEMINI_API_KEY=AQ...         # Google AI Studio key (starts with AQ., for the AI chat feature)
 ```
 
 Save and exit: `Ctrl+O`, `Enter`, `Ctrl+X`.

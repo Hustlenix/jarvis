@@ -15,7 +15,8 @@
     "@openai/agents": "^0.14.2",
     "@slack/bolt": "^5.0.0",
     "axios": "^1.7.9",
-    "dotenv": "~17.4.2"
+    "dotenv": "~17.4.2",
+    "openai": "^6.49.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.6",
