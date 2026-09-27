@@ -44,9 +44,29 @@ jobs:
   deploy:
     needs: verify
     runs-on: ubuntu-latest
-    if: ${{ secrets.NEST_HOST != '' }}
     steps:
+      # This gate MUST live at step level, not as a job-level `if`.
+      # GitHub does not expose the `secrets` context to `jobs.<id>.if`. A
+      # workflow referencing it there is not merely rejected at runtime - it
+      # fails to parse at all, spawns zero jobs, and reports "likely failed
+      # because of a workflow file issue" with no logs and no jobs to inspect.
+      # `secrets` IS available in `steps.*.env`, so read it there and branch on
+      # a step output instead.
+      - name: Check deploy config
+        id: deploycfg
+        env:
+          NEST_HOST: ${{ secrets.NEST_HOST }}
+        run: |
+          if [ -n "${NEST_HOST:-}" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "NEST_HOST is not set, so there is nowhere to deploy."
+            echo "See docs/NEST-DEPLOY.md to configure the deploy secrets."
+          fi
+
       - name: Deploy over SSH
+        if: steps.deploycfg.outputs.configured == 'true'
         uses: appleboy/ssh-action@v1.2.0
         env:
           # Passed through the environment rather than interpolated into the
