@@ -54,7 +54,17 @@ export const fetchUrl = tool({
     'Fetch the contents of a URL and return it as plain text. Use this when the user shares a link ' +
     'and wants to know what is on it, or when you need details from a specific page.',
   parameters: z.object({
-    url: z.string().url().describe('The full http(s) URL to fetch.'),
+    // Deliberately NOT z.string().url(): that emits a JSON Schema `format: "uri"`,
+    // which the Hack Club proxy rejects with `invalid_function_parameters`,
+    // breaking the whole agent run. `pattern` is a standard keyword every
+    // validator accepts. fetchPageText still hard-validates with `new URL()`
+    // and the http/https protocol check, so this is defence in depth, not the
+    // only guard.
+    url: z
+      .string()
+      .max(2048)
+      .regex(/^https?:\/\/\S+$/i)
+      .describe('The full http(s) URL to fetch.'),
   }),
   execute: async ({ url }) => fetchPageText(url, (await import('axios')).default),
 });
