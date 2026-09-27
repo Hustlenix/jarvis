@@ -41,9 +41,15 @@ nano .env
 Paste in the same values you use locally:
 
 ```
-SLACK_BOT_TOKEN=xoxb-...      # Bot User OAuth Token
-SLACK_APP_TOKEN=xapp-...      # App-Level Token (connections:write)
-GEMINI_API_KEY=AQ...         # Google AI Studio key (starts with AQ., for the AI chat feature)
+SLACK_BOT_TOKEN=xoxb-...           # Bot User OAuth Token
+SLACK_APP_TOKEN=xapp-...           # App-Level Token (connections:write)
+HACKCLUB_AI_API_KEY=...            # Hack Club AI key (https://ai.hackclub.com) for AI chat
+```
+
+Then lock the file down, since systemd reads it directly:
+
+```bash
+chmod 600 .env
 ```
 
 Save and exit: `Ctrl+O`, `Enter`, `Ctrl+X`.
@@ -65,7 +71,8 @@ nano /etc/systemd/system/slackbot.service
 
 Paste the contents of `deploy/slackbot.service` from this repo (edit
 `WorkingDirectory` and `ExecStart` if your repo path or node path differ —
-confirm with `which node`).
+confirm with `which node`). The unit already reads `/root/jarvis/.env` via
+`EnvironmentFile`, so the file from step 4 is picked up automatically.
 
 ```bash
 systemctl daemon-reload

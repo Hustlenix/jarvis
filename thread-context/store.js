@@ -4,6 +4,9 @@
  * @property {number} timestamp
  */
 
+/** Keep only the most recent items so a long thread cannot blow the context window. */
+const MAX_MESSAGES = 20;
+
 /**
  * In-memory conversation history store with TTL-based cleanup.
  */
@@ -11,14 +14,17 @@ export class ConversationStore {
   /**
    * @param {number} [ttlSeconds=86400]
    * @param {number} [maxConversations=1000]
+   * @param {number} [maxMessages=MAX_MESSAGES]
    */
-  constructor(ttlSeconds = 86400, maxConversations = 1000) {
+  constructor(ttlSeconds = 86_400, maxConversations = 1000, maxMessages = MAX_MESSAGES) {
     /** @type {Map<string, StoreEntry>} */
     this._store = new Map();
     /** @private @type {number} */
     this._ttlSeconds = ttlSeconds;
     /** @private @type {number} */
     this._maxConversations = maxConversations;
+    /** @private @type {number} */
+    this._maxMessages = maxMessages;
   }
 
   /**
@@ -44,9 +50,10 @@ export class ConversationStore {
    * @returns {void}
    */
   setHistory(channelId, threadTs, messages) {
+    if (!Array.isArray(messages)) return;
     const key = `${channelId}:${threadTs}`;
     this._store.set(key, {
-      messages,
+      messages: messages.slice(-this._maxMessages),
       timestamp: Date.now(),
     });
     this._cleanup();

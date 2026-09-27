@@ -52,4 +52,29 @@ describe('ConversationStore', () => {
     store.setHistory('C1', 'T1', [{ role: 'user', content: 'new' }]);
     assert.deepStrictEqual(store.getHistory('C1', 'T1'), [{ role: 'user', content: 'new' }]);
   });
+
+  it('caps stored history to the most recent messages', () => {
+    const capped = new ConversationStore(86_400, 100, 3);
+    const many = [
+      { role: 'user', content: '1' },
+      { role: 'assistant', content: '2' },
+      { role: 'user', content: '3' },
+      { role: 'assistant', content: '4' },
+      { role: 'user', content: '5' },
+    ];
+    capped.setHistory('C1', 'T1', many);
+    assert.deepStrictEqual(capped.getHistory('C1', 'T1'), many.slice(-3));
+  });
+
+  it('ignores a non-array history write', () => {
+    store.setHistory('C1', 'T1', /** @type {any} */ ('not an array'));
+    assert.strictEqual(store.getHistory('C1', 'T1'), null);
+  });
+
+  it('does not keep a reference to the caller array', () => {
+    const messages = [{ role: 'user', content: 'original' }];
+    store.setHistory('C1', 'T1', messages);
+    messages.push({ role: 'user', content: 'sneaky append' });
+    assert.strictEqual(store.getHistory('C1', 'T1').length, 1);
+  });
 });

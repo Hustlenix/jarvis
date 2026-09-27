@@ -3,13 +3,40 @@ Description=Jarvis Slack Bot
 After=network-online.target
 Wants=network-online.target
 
+# Start-rate limits live in [Unit], not [Service]. Always restart, but back off
+# if the process is crash-looping so a bad deploy cannot spin the CPU.
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
 [Service]
 Type=simple
 User=root
+WorkingDirectory=/root/jarvis
+
+# Secrets live in /root/jarvis/.env (chmod 600), never in this unit file.
+EnvironmentFile=/root/jarvis/.env
+Environment=NODE_ENV=production
+
+ExecStart=/usr/bin/node index.js
+
+# Always restart unless explicitly stopped.
 Restart=always
 RestartSec=5
-WorkingDirectory=/root/jarvis
-ExecStart=/usr/bin/node index.js
+
+# Log to the journal where `journalctl -u slackbot` can read it.
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=slackbot
+
+# Give the process a clean 15s to drain before systemd sends SIGKILL.
+KillSignal=SIGTERM
+TimeoutStopSec=15
+
+# Minimal hardening. The bot only needs outbound network and its own directory.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
 
 [Install]
 WantedBy=multi-user.target

@@ -2,7 +2,7 @@
 
 A friendly AI Slack bot for the [Hack Club](https://hackclub.com) workspace, built
 with [Bolt for JavaScript](https://slack.dev/bolt-js/) and the
-[OpenAI Agents SDK](https://openai.github.io/openai-agents-python/).
+[OpenAI Agents SDK for JavaScript](https://openai.github.io/openai-agents-js/).
 
 Jarvis lives in Slack: @-mention it or DM it and it'll chat with you (with a
 little personality), remember what you talked about, and react to your messages
@@ -21,7 +21,7 @@ with emoji. It also has a few slash commands for quick stuff.
   | Command | What it does |
   | --- | --- |
   | `/jarvis-help` | Lists all available commands |
-  | `/jarvis-ping` | Checks bot latency |
+  | `/jarvis-ping` | Checks bot latency and uptime |
   | `/jarvis-catfact` | Fetches a random cat fact |
   | `/jarvis-joke` | Fetches a random joke |
 
@@ -37,7 +37,7 @@ You'll need:
 
 - Node.js 20+
 - A Slack app with Socket Mode enabled (see below)
-- A Google AI Studio API key (free at [aistudio.google.com](https://aistudio.google.com))
+- A Hack Club AI API key (from [ai.hackclub.com](https://ai.hackclub.com)) for AI chat — the slash commands work without it
 
 ### 1. Set up the Slack app
 
@@ -51,14 +51,14 @@ You'll need:
 ### 2. Configure the environment
 
 ```bash
-cp .env.sample .env
+cp .env.example .env
 ```
 
 Then fill in the three values in `.env`:
 
 - `SLACK_BOT_TOKEN` — the `xoxb-` token from step 1
 - `SLACK_APP_TOKEN` — the `xapp-` token from step 1
-- `GEMINI_API_KEY` — your Google AI Studio key (for the AI chat — the slash commands work without it)
+- `HACKCLUB_AI_API_KEY` — your Hack Club AI key (for the AI chat — the slash commands work without it)
 
 ### 3. Run it
 
@@ -88,6 +88,7 @@ npm run lint    # biome lint
 
 ```
 index.js                  entry point — sets up the Bolt app
+config.js                 startup environment checks
 listeners/                Slack handlers, grouped by type
   events/                 app_mention, messages, app_home_opened
   commands/               slash command handlers

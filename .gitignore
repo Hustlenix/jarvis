@@ -1,12 +1,16 @@
 # Environment
 .env*
-!.env.sample
+!.env.example
 
 # Node.js
 node_modules/
 
 # Logs
 logs/
+*.log
+
+# Slack app local state (machine-specific app config, not shared source)
+.slack/
 
 # macOS
 .DS_Store

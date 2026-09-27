@@ -6,30 +6,101 @@ on:
     branches: [main, master]
     paths:
       - 'index.js'
+      - 'config.js'
       - 'listeners/**'
       - 'agent/**'
       - 'thread-context/**'
+      - 'manifest.json'
+      - 'deploy/**'
       - 'package.json'
       - 'package-lock.json'
+      - 'tsconfig.json'
+      - 'tests/**'
+      - '.github/workflows/deploy-nest.yml'
+
+# The default token only needs to read the repo. Nothing here pushes or writes.
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-to-nest
+  cancel-in-progress: false
 
 jobs:
+  # A deploy may only happen if the code is actually green.
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run check
+      - run: npm run lint
+
   deploy:
+    needs: verify
     runs-on: ubuntu-latest
     if: ${{ secrets.NEST_HOST != '' }}
     steps:
-      - uses: actions/checkout@v4
-
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          # Passed through the environment rather than interpolated into the
+          # script, so a secret can never become shell syntax.
+          NEST_PATH: ${{ secrets.NEST_PATH }}
         with:
           host: ${{ secrets.NEST_HOST }}
           username: ${{ secrets.NEST_USER }}
           key: ${{ secrets.NEST_SSH_KEY }}
+          # set -euo pipefail so a failed preflight, pull, install or restart
+          # fails the job instead of reporting a green deploy that never happened.
           script: |
-            cd ${{ secrets.NEST_PATH }}
-            git pull --ff-only origin main || git pull --ff-only origin master
-            npm install --omit=dev
-            systemctl --user restart slackbot.service 2>/dev/null || systemctl restart slackbot.service 2>/dev/null || true
+            set -euo pipefail
 
-      - name: Report deployment status
-        run: echo "Deploy triggered for ${{ github.repository }}"
+            if [ -z "${NEST_PATH:-}" ] || [ ! -d "$NEST_PATH" ]; then
+              echo "NEST_PATH is unset or is not a directory on the server."
+              exit 1
+            fi
+            cd "$NEST_PATH"
+
+            # Secrets live only on the server, never in git. Fail loudly here
+            # rather than letting the unit crash-loop on a missing token.
+            if [ ! -f .env ]; then
+              echo "No .env in $NEST_PATH. See docs/NEST-DEPLOY.md."
+              exit 1
+            fi
+            for key in SLACK_BOT_TOKEN SLACK_APP_TOKEN HACKCLUB_AI_API_KEY; do
+              if ! grep -qE "^${key}=.+" .env; then
+                echo ".env is missing a non-empty $key"
+                exit 1
+              fi
+            done
+
+            if ! git pull --ff-only origin main; then
+              git pull --ff-only origin master
+            fi
+
+            npm ci --omit=dev
+
+            # The unit is a system service (User=root), so use systemctl
+            # directly. No `|| true`: a failed restart must fail this job.
+            systemctl restart slackbot.service
+
+            # Give a slow start a few chances before declaring it dead, while
+            # still catching a crash-loop within a few seconds.
+            for attempt in 1 2 3 4 5; do
+              if systemctl is-active --quiet slackbot.service; then
+                echo "slackbot.service is active (attempt $attempt)"
+                exit 0
+              fi
+              echo "not active yet (attempt $attempt); status follows"
+              systemctl status slackbot.service --no-pager --lines=20 || true
+              sleep 3
+            done
+
+            echo "slackbot.service did not stay active after restart."
+            exit 1

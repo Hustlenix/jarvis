@@ -1,63 +1,100 @@
 import { Agent, OpenAIChatCompletionsModel, run } from '@openai/agents';
 import OpenAI from 'openai';
-
+import {
+  AiUnavailableError,
+  getAiSettings,
+  isAiConfigured,
+  MAX_TURNS,
+  REQUEST_TIMEOUT_MS,
+  RUN_TIMEOUT_MS,
+  withTimeout,
+} from './ai.js';
 import { addEmojiReaction, fetchUrl, setReminder, topNews, weather, webSearch } from './tools/index.js';
 
-const client = new OpenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  baseURL: process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta/openai/',
-});
-
-const modelName = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite';
-
 const SYSTEM_PROMPT = `\
-You are Jarvis, a friendly Slack assistant. You help people by answering questions, \
-having conversations, and being generally useful in Slack.
+You are Jarvis, a helpful assistant inside the Hack Club Slack workspace.
+Be concise, friendly, technically accurate, and useful to teenagers building projects.
+Do not pretend to have performed actions you did not perform.
 
-## PERSONALITY
-- Friendly, helpful, and approachable
-- Lightly witty — a touch of humor when appropriate, but never forced
-- Concise and clear — respect people's time
-- Confident but honest when you don't know something
-
-## RESPONSE GUIDELINES
-- Keep responses to 3 sentences max — be punchy, scannable, and actionable
-- End with a clear next step on its own line so it's easy to spot
-- Use a bullet list only for multi-step instructions
-- Use casual, conversational language
-- Use emoji sparingly — at most one per message, and only to set tone
-
-## FORMATTING RULES
-- Use standard Markdown syntax: **bold**, _italic_, \`code\`, \`\`\`code blocks\`\`\`, > blockquotes
-- Use bullet points for multi-step instructions
-
-## EMOJI REACTIONS
-Always react to every user message with \`add_emoji_reaction\` before responding. \
-Pick any Slack emoji that reflects the *topic* or *tone* of the message — be creative and specific \
-(e.g. \`dog\` for dog topics, \`books\` for learning, \`wave\` for greetings). \
-Vary your picks across a thread; don't repeat the same emoji.
+## RESPONSE STYLE
+- Keep replies to 3 sentences max — punchy and scannable
+- Put the next step on its own line when there is one
+- Bullet lists only for genuinely multi-step answers
+- Use standard Slack markdown: **bold**, _italic_, \`code\`, \`\`\`code blocks\`\`\`
+- At most one emoji, and only when it adds tone
 
 ## TOOLS
-- \`web_search\`: use for current facts, news events, anything you are unsure about or that changes over time
-- \`fetch_url\`: use when the user shares a link and wants to know what is on the page
-- \`get_weather\`: use for any weather question, anywhere in the world
-- \`get_top_news\`: use when the user asks what is happening in tech or wants top stories
-- \`set_reminder\`: use when the user asks to be reminded about something later; the reminder posts into the conversation after the requested minutes
-- If a tool fails or returns an empty result, tell the user what happened instead of inventing an answer.`;
+- \`web_search\`: current facts, news, anything time-sensitive or uncertain
+- \`fetch_url\`: the user shares a link and wants to know what's on it
+- \`get_weather\`: any weather question
+- \`get_top_news\`: what is happening in tech
+- \`set_reminder\`: the user wants to be reminded later
+- \`add_emoji_reaction\`: react to the user's message with a topical emoji
 
-export const jarvisAgent = new Agent({
-  name: 'Jarvis',
-  instructions: SYSTEM_PROMPT,
-  tools: [addEmojiReaction, webSearch, fetchUrl, weather, topNews, setReminder],
-  model: new OpenAIChatCompletionsModel(client, modelName),
-});
+If a tool fails or returns nothing, say so plainly instead of inventing an answer.`;
+
+/** @type {OpenAI | null} */
+let cachedClient = null;
+/** @type {import('@openai/agents').Agent | null} */
+let cachedAgent = null;
+
+/**
+ * Build (once) the OpenAI-compatible client pointed at Hack Club AI.
+ * Lazy so that importing this module never throws on a missing key.
+ *
+ * @returns {OpenAI}
+ */
+function getClient() {
+  if (cachedClient) return cachedClient;
+  if (!isAiConfigured()) {
+    throw new AiUnavailableError('HACKCLUB_AI_API_KEY is not set, so AI chat is disabled.');
+  }
+  const { baseURL } = getAiSettings();
+  cachedClient = new OpenAI({
+    apiKey: /** @type {string} */ (process.env.HACKCLUB_AI_API_KEY),
+    baseURL,
+    timeout: REQUEST_TIMEOUT_MS,
+    maxRetries: 2,
+  });
+  return cachedClient;
+}
+
+/**
+ * @returns {import('@openai/agents').Agent}
+ */
+function getAgent() {
+  if (cachedAgent) return cachedAgent;
+  const { model } = getAiSettings();
+  cachedAgent = new Agent({
+    name: 'Jarvis',
+    instructions: SYSTEM_PROMPT,
+    tools: [addEmojiReaction, webSearch, fetchUrl, weather, topNews, setReminder],
+    model: new OpenAIChatCompletionsModel(getClient(), model),
+  });
+  return cachedAgent;
+}
+
+/**
+ * Reset the memoised client/agent. Used by tests.
+ * @returns {void}
+ */
+export function resetAiClient() {
+  cachedClient = null;
+  cachedAgent = null;
+}
 
 /**
  * Run the agent with the given input and dependencies.
+ *
  * @param {string | import('@openai/agents').AgentInputItem[]} inputItems
  * @param {import('./deps.js').AgentDeps} deps
  * @returns {Promise<import('@openai/agents').RunResult<any, any>>}
  */
 export async function runAgent(inputItems, deps) {
-  return await run(jarvisAgent, inputItems, { context: deps });
+  const agent = getAgent();
+  return await withTimeout(
+    run(agent, inputItems, { context: deps, maxTurns: MAX_TURNS }),
+    RUN_TIMEOUT_MS,
+    'The AI took too long to answer. Try again in a moment.',
+  );
 }
