@@ -29,12 +29,16 @@ each item is a choice, a verification, or a nice-to-have.
 
 ## Verify on the server (I can't do these without Nest access)
 
-- **Live AI chat.** I have no `HACKCLUB_AI_API_KEY` locally, so the Hack Club AI
-  path is unit-tested but never run against the real endpoint. First real check:
+- **Live AI chat in Slack.** Now verified against the real endpoint with a real
+  key: `openai/gpt-4o-mini` answers through `https://ai.hackclub.com/proxy/v1`,
+  and an `add_emoji_reaction` round trip (model → tool → Slack client → model)
+  completes. That surfaced a proxy-strictness bug unit tests could not — see the
+  `tests/agent/tools-schema.test.js` note. What is still unverified is the same
+  thing end-to-end *through Slack*, which needs the service running on Nest:
   mention the bot in `#bot-spam` and confirm a reply streams back.
-- **Confirm the model actually exists.** Default is `openai/gpt-4o-mini` through
-  `https://ai.hackclub.com/proxy/v1`. If the proxy rejects that model name, set
-  `HACKCLUB_AI_MODEL` in `.env` — no code change needed.
+- **Confirm the model actually exists.** Done — `openai/gpt-4o-mini` is accepted
+  by the proxy. If that ever stops being true, set `HACKCLUB_AI_MODEL` in `.env`;
+  no code change needed.
 - **Re-check the systemd unit loads** on the server after the
   `StartLimitIntervalSec` / `StartLimitBurst` move into `[Unit]`:
   `systemd-analyze verify /etc/systemd/system/slackbot.service`.
