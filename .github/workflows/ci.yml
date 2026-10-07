@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, "jarvis-zero/**"]
   pull_request:
 
 jobs:
@@ -14,6 +14,19 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - run: npm ci
       - run: npm run check
       - run: npm test
+      - name: Python kernel tests
+        env:
+          PYTHONPATH: core_py
+        run: python -m unittest discover -s tests_py -p 'test_*.py' -v
+      - name: Configure C++ core
+        run: cmake -S native -B native/build -DCMAKE_BUILD_TYPE=Release
+      - name: Build C++ core
+        run: cmake --build native/build --parallel
+      - name: Test C++ core
+        run: ctest --test-dir native/build --output-on-failure
