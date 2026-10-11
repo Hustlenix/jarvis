@@ -6,7 +6,7 @@ import { probeHackClubAi } from '../../agent/ai-health.js';
 const base = {
   apiKey: 'TEST-SECRET-DO-NOT-PRINT',
   baseURL: 'https://ai.hackclub.com/proxy/v1/',
-  model: 'openai/gpt-4o-mini',
+  model: 'openai/gpt-6-luna',
 };
 
 describe('Hack Club AI key verification', () => {
@@ -25,6 +25,9 @@ describe('Hack Club AI key verification', () => {
     assert.equal(init.method, 'POST');
     assert.equal(init.headers.Authorization, 'Bearer TEST-SECRET-DO-NOT-PRINT');
     assert.equal(JSON.parse(init.body).model, base.model);
+    assert.equal(JSON.parse(init.body).reasoning_effort, 'none');
+    assert.equal(JSON.parse(init.body).max_completion_tokens, 64);
+    assert.equal(JSON.parse(init.body).max_tokens, undefined);
     assert.deepEqual(result, { model: base.model, reachable: true });
   });
 
