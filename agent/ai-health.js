@@ -27,7 +27,11 @@ export async function probeHackClubAi({ apiKey, baseURL, model, fetchImpl = fetc
         model,
         messages: [{ role: 'user', content: 'Reply with exactly PONG.' }],
         stream: false,
-        max_tokens: 20,
+        // max_completion_tokens supersedes the legacy max_tokens field for
+        // new reasoning models. GPT-6 Luna requires none for Chat Completions
+        // function calling in the production agent.
+        max_completion_tokens: 64,
+        ...(model === 'openai/gpt-6-luna' ? { reasoning_effort: 'none' } : {}),
       }),
       signal: AbortSignal.timeout(20_000),
     });
