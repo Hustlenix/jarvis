@@ -8,6 +8,7 @@
     "check": "tsc -p tsconfig.json",
     "start": "node index.js",
     "doctor": "node scripts/doctor.js",
+    "doctor:ai": "node scripts/doctor-ai.js",
     "lint": "npx @biomejs/biome check .",
     "lint:fix": "npx @biomejs/biome check --write .",
     "test": "node --test"
