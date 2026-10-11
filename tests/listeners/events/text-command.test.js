@@ -33,7 +33,13 @@ describe('plain-text command fallback', () => {
       allowBare: true,
       threadTs: '123.456',
       say: async (payload) => sent.push(payload),
-      client: { auth: { test: async () => { checked = true; } } },
+      client: {
+        auth: {
+          test: async () => {
+            checked = true;
+          },
+        },
+      },
     });
     assert.equal(handled, true);
     assert.equal(checked, true);
@@ -45,7 +51,9 @@ describe('plain-text command fallback', () => {
     let said = false;
     const handled = await handleTextCommand('How do I build a robot?', {
       threadTs: '123.456',
-      say: async () => { said = true; },
+      say: async () => {
+        said = true;
+      },
     });
     assert.equal(handled, false);
     assert.equal(said, false);
