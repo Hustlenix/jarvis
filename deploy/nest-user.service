@@ -1,0 +1,21 @@
+[Unit]
+Description=Jarvis Slack Bot (user service)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/jarvis
+EnvironmentFile=%h/jarvis/.env
+Environment=NODE_ENV=production
+
+# Node installed as /usr/bin/node. Check with: command -v node
+ExecStart=/usr/bin/node index.js
+
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target
