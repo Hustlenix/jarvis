@@ -2,6 +2,7 @@ import { AgentDeps, runAgent } from '../../agent/index.js';
 import { conversationStore } from '../../thread-context/index.js';
 import { buildFeedbackBlocks } from '../views/feedback-builder.js';
 import { buildAiErrorText, extractReply, safeSetStatus } from './shared.js';
+import { handleTextCommand } from './text-command.js';
 
 /**
  * @param {import('@slack/types').MessageEvent} event
@@ -51,6 +52,9 @@ export async function handleMessage({ client, context, event, logger, say, saySt
     const userId = /** @type {string} */ (context.userId);
 
     if (text.length === 0) return;
+
+    // DMs and engaged threads can use deterministic commands without the AI backend.
+    if (await handleTextCommand(text, { say, threadTs, client, allowBare: isDm })) return;
 
     await safeSetStatus(setStatus, logger);
 
