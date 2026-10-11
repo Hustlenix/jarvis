@@ -61,7 +61,7 @@ jobs:
             echo "configured=true" >> "$GITHUB_OUTPUT"
           else
             echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "NEST_HOST is not set, so there is nowhere to deploy."
+            echo "::warning::NEST_HOST is not set. GitHub verification passed, but Jarvis was NOT deployed to Nest."
             echo "See docs/NEST-DEPLOY.md to configure the deploy secrets."
           fi
 
@@ -93,18 +93,19 @@ jobs:
               echo "No .env in $NEST_PATH. See docs/NEST-DEPLOY.md."
               exit 1
             fi
-            for key in SLACK_BOT_TOKEN SLACK_APP_TOKEN HACKCLUB_AI_API_KEY; do
+            # AI is optional; basic commands and the text fallback work without it.
+            for key in SLACK_BOT_TOKEN SLACK_APP_TOKEN; do
               if ! grep -qE "^${key}=.+" .env; then
                 echo ".env is missing a non-empty $key"
                 exit 1
               fi
             done
 
-            if ! git pull --ff-only origin main; then
-              git pull --ff-only origin master
-            fi
+            git pull --ff-only origin master
 
             npm ci --omit=dev
+            # Fail before restart when either Slack token is invalid or Socket Mode cannot connect.
+            npm run doctor
 
             # The unit is a system service (User=root), so use systemctl
             # directly. No `|| true`: a failed restart must fail this job.
