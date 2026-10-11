@@ -27,12 +27,12 @@ describe('isAiConfigured', () => {
 });
 
 describe('getAiSettings', () => {
-  it('defaults to the Hack Club proxy and gpt-4o-mini', () => {
+  it('defaults to the Hack Club proxy and GPT-6 Luna', () => {
     delete process.env.HACKCLUB_AI_BASE_URL;
     delete process.env.HACKCLUB_AI_MODEL;
     const settings = getAiSettings();
     assert.strictEqual(settings.baseURL, 'https://ai.hackclub.com/proxy/v1');
-    assert.strictEqual(settings.model, 'openai/gpt-4o-mini');
+    assert.strictEqual(settings.model, 'openai/gpt-6-luna');
   });
 
   it('allows overrides', () => {
