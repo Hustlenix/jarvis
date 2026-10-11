@@ -10,20 +10,20 @@ import { handlePing } from './ping.js';
  * @returns {void}
  */
 export function register(app) {
-  app.command('/jarvis-help', async (args) => {
-    args.logger.info('[jarvis-delivery] received /jarvis-help');
+  app.command('/jarvis-help-hustlenix', async (args) => {
+    args.logger.info('[jarvis-delivery] received /jarvis-help-hustlenix');
     await handleHelp(args);
   });
-  app.command('/jarvis-ping', async (args) => {
-    args.logger.info('[jarvis-delivery] received /jarvis-ping');
+  app.command('/jarvis-ping-hustlenix', async (args) => {
+    args.logger.info('[jarvis-delivery] received /jarvis-ping-hustlenix');
     await handlePing(args);
   });
-  app.command('/jarvis-catfact', async (args) => {
-    args.logger.info('[jarvis-delivery] received /jarvis-catfact');
+  app.command('/jarvis-catfact-hustlenix', async (args) => {
+    args.logger.info('[jarvis-delivery] received /jarvis-catfact-hustlenix');
     await handleCatFact(args);
   });
-  app.command('/jarvis-joke', async (args) => {
-    args.logger.info('[jarvis-delivery] received /jarvis-joke');
+  app.command('/jarvis-joke-hustlenix', async (args) => {
+    args.logger.info('[jarvis-delivery] received /jarvis-joke-hustlenix');
     await handleJoke(args);
   });
 }
