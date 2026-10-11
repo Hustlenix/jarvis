@@ -10,10 +10,10 @@ It runs using Slack Bolt with Node.js and uses Socket Mode, so I don't need to e
 
 Jarvis currently has these commands:
 
-- `/jarvis-help` — shows the commands
-- `/jarvis-ping` — checks if Jarvis is alive and responding
-- `/jarvis-catfact` — gives you a random cat fact
-- `/jarvis-joke` — gives you a random joke
+- `/jarvis-help-hustlenix` — shows the commands
+- `/jarvis-ping-hustlenix` — checks if Jarvis is alive and responding
+- `/jarvis-catfact-hustlenix` — gives you a random cat fact
+- `/jarvis-joke-hustlenix` — gives you a random joke
 
 You can also mention Jarvis in Slack or DM it and ask it something.
 
@@ -132,10 +132,10 @@ I test Jarvis in Hack Club's `#bot-spam` channel.
 Some easy commands to try are:
 
 ```text
-/jarvis-help
-/jarvis-ping
-/jarvis-catfact
-/jarvis-joke
+/jarvis-help-hustlenix
+/jarvis-ping-hustlenix
+/jarvis-catfact-hustlenix
+/jarvis-joke-hustlenix
 ```
 
 You can also mention Jarvis and ask it something.
