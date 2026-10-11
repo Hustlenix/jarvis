@@ -81,9 +81,9 @@ If everything is configured properly, Jarvis should connect to Slack.
 
 One problem I had was that running the bot on my own computer meant Jarvis went offline whenever I closed the terminal or turned off my PC.
 
-So I deployed it to Hack Club Nest and run it as a `systemd` service.
+I prepared the Hack Club Nest deployment files, but the bot is **not yet confirmed online**. The latest GitHub deployment requires an approved Nest container and SSH configuration before it can run.
 
-That means the bot can:
+When installed as a service on a reachable host, the bot can:
 
 - keep running after I disconnect from SSH
 - start again when the server reboots
@@ -99,7 +99,7 @@ There are different tokens for the bot and Socket Mode, and the bot also needs t
 
 I also had to make sure Jarvis didn't reply to itself and create a bot loop.
 
-Another issue was keeping the bot online all the time. Running `node index.js` on my laptop obviously wasn't actually 24/7, so I moved it to Nest and used systemd.
+Another issue is keeping the bot online all the time. Running `node index.js` on my laptop is not actually 24/7, so I wrote a Nest deployment setup using systemd. I still need to verify it on an approved Nest container.
 
 The AI part also needed error handling because I didn't want the whole Slack bot to crash just because the AI API failed.
 
@@ -117,7 +117,7 @@ A lot of the work is configuration:
 - deployment
 - keeping secrets out of GitHub
 
-I also understand systemd and always-on deployment better now because of this project.
+I learned how systemd services can restart a bot, although the Nest deployment still needs a live test.
 
 ## Fixing Slack `invalid_service`
 
@@ -160,7 +160,7 @@ manifest.json
 
 `thread-context/` handles the small amount of conversation context Jarvis remembers.
 
-`deploy/` contains the files used to keep Jarvis running on the server.
+`deploy/` contains service configuration for running Jarvis on a server. These files do not mean a server deployment is active.
 
 ## AI usage
 
