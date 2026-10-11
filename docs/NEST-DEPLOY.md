@@ -7,16 +7,18 @@ Passing GitHub CI tests does not mean the bot is hosted or live.
 
 Nest's current official quickstart: https://guides.hackclub.app/index.php/Quickstart
 
-Apply at https://dashboard.hackclub.app and complete any Hack Club Auth
-verification the dashboard requests. You cannot SSH until Nest has approved the
-account. The login is **not automatically root**; after approval:
+The Nest dashboard shows the approved `jarvis` container (VMID 1516) is running.
+From **Windows PowerShell**, connect as:
 
-```bash
-ssh YOUR_NEST_USERNAME@hackclub.app
+```powershell
+ssh jarvis@hackclub.app
 ```
 
-If the application is pending, do not try to invent a server IP/username or
-give someone your SSH private key. Follow up in Hack Club Slack's `#nest-help`.
+If SSH responds `Permission denied (publickey)`, your computer's SSH public key
+is not authorized for this container; add the **public** `.pub` key through Nest's
+approved key-management flow. Never share the private key. The SSH username
+does not determine whether the container shell itself has root permissions.
+Check with `id -u` after login.
 
 ## 2. Check prerequisites and clone
 
@@ -114,21 +116,19 @@ unprivileged Nest user.
 
 ## 6. Optional automatic deployment from GitHub
 
-The repo includes `.github/workflows/deploy-nest.yml`. Add these four secret
-**values yourself** under GitHub repository Settings → Secrets and variables →
-Actions:
+The repo has `.github/workflows/deploy-nest.yml`. We have already set the
+public connection details to `jarvis@hackclub.app` and made the install path
+`$HOME/jarvis`, so **the only required GitHub Actions secret is
+`NEST_SSH_KEY`**. If you want automatic deployments, create a **dedicated
+deployment SSH key** on your own computer or approved Nest account, authorize
+only its public key in the container, and add its private key to the GitHub
+repository's **Actions secrets** (never as a tracked file). Do not send it in
+chat. Avoid giving a personal SSH key with unrelated access to GitHub Actions.
 
-- `NEST_HOST`: `hackclub.app` (official Nest SSH hostname)
-- `NEST_USER`: the Nest username approved for your container
-- `NEST_SSH_KEY`: a private SSH key authorized for **that account**
-- `NEST_PATH`: absolute path where the repo is cloned (e.g.
-  `/home/YOUR_NEST_USERNAME/jarvis`; inspect with `pwd`)
-
-For a regular username, the workflow restarts `systemctl --user`; for root,
-it restarts the system unit. **The service must already have been installed
-manually as in Step 5.** You must not store these credentials in source code.
-The GitHub workflow now fails explicitly if the deployment configuration is
-missing; a completed verification run alone is not evidence of hosting.
+The service must already be installed manually as in Step 5. Once set up,
+the workflow restarts `systemctl --user` for a non-root account or the
+system service for root. The job fails explicitly when the key is not
+configured; an isolated passing CI job is not proof of deployment.
 
 Only request Stardance re-certification after another person can successfully
 use the bot in Hack Club Slack while your laptop is disconnected.
