@@ -148,3 +148,55 @@ configured; an isolated passing CI job is not proof of deployment.
 
 Only request Stardance re-certification after another person can successfully
 use the bot in Hack Club Slack while your laptop is disconnected.
+
+
+## Switch the cloud AI model to GPT-6 Luna
+
+Jarvis defaults to Hack Club AI's `openai/gpt-6-luna` model. It uses the
+OpenAI-compatible Chat Completions API at
+`https://ai.hackclub.com/proxy/v1`, not a local LLM. The code sets
+`reasoning_effort: none` for this model because the agent needs function
+calling on Chat Completions; Luna's other reasoning modes require a different
+tool-capable API integration.
+
+On the **Nest container** (where `slackbot.service` runs), use:
+
+```bash
+cd /root/jarvis
+git pull --ff-only origin master
+nano .env
+```
+
+Keep the existing, private `HACKCLUB_AI_API_KEY`, `SLACK_BOT_TOKEN`, and
+`SLACK_APP_TOKEN` entries. Set exactly this non-secret model override (or
+omit the variable and use the new code default):
+
+```dotenv
+HACKCLUB_AI_MODEL=openai/gpt-6-luna
+```
+
+Then verify **before restarting**:
+
+```bash
+npm ci --omit=dev
+npm run doctor:ai
+systemctl restart slackbot.service
+systemctl status slackbot.service --no-pager
+```
+
+If `doctor:ai` fails, do not restart; the prior running service will retain
+its previous configuration. Fix the selected model/key first. Note that a
+preflight chat completion checks API availability but does **not** prove the
+complete agent tool chain, Slack delivery, or that the correct Slack bot ID
+receives the messages. Test with a simple question and a tool-based question
+(e.g. weather) in Hack Club `#bot-spam`.
+
+**Identity warning:** The earlier verified Nest bot ID is `U0BP5DAB3QC`,
+whereas the publicly tested Jarvis bot was `U0BNS6CRM9R`. These are
+different Slack app accounts. Upgrading this Nest code affects only the app
+associated with the server's actual `SLACK_BOT_TOKEN`. Confirm this with
+`npm run doctor` (prints no token values) before promising the reviewer
+that the public Jarvis uses GPT-6 Luna.
+
+Never print keys from `.env`, publish them in Slack/chat, or commit them to
+the repo. Revoke and rotate any key previously exposed.
