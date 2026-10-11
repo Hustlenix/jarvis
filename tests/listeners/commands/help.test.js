@@ -6,7 +6,7 @@ import { buildHelpText, handleHelp } from '../../../listeners/commands/help.js';
 describe('buildHelpText', () => {
   it('lists every available command', () => {
     const text = buildHelpText();
-    for (const command of ['/jarvis-help', '/jarvis-ping', '/jarvis-catfact', '/jarvis-joke']) {
+    for (const command of ['/jarvis-help-hustlenix', '/jarvis-ping-hustlenix', '/jarvis-catfact-hustlenix', '/jarvis-joke-hustlenix']) {
       assert.ok(text.includes(command), `missing ${command}`);
     }
   });
