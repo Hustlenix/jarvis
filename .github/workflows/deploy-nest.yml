@@ -52,21 +52,26 @@ jobs:
       # because of a workflow file issue" with no logs and no jobs to inspect.
       # `secrets` IS available in `steps.*.env`, so read it there and branch on
       # a step output instead.
-      - name: Check deploy config
-        id: deploycfg
+      - name: Require Nest deployment credentials
         env:
           NEST_HOST: ${{ secrets.NEST_HOST }}
+          NEST_USER: ${{ secrets.NEST_USER }}
+          NEST_PATH: ${{ secrets.NEST_PATH }}
+          NEST_SSH_KEY: ${{ secrets.NEST_SSH_KEY }}
         run: |
-          if [ -n "${NEST_HOST:-}" ]; then
-            echo "configured=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::NEST_HOST is not set. GitHub verification passed, but Jarvis was NOT deployed to Nest."
-            echo "See docs/NEST-DEPLOY.md to configure the deploy secrets."
+          missing=0
+          for key in NEST_HOST NEST_USER NEST_PATH NEST_SSH_KEY; do
+            if [ -z "${!key:-}" ]; then
+              echo "::error title=Nest not configured::${key} must be configured as a repository Actions secret."
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo "Jarvis was NOT deployed. See docs/NEST-DEPLOY.md."
+            exit 1
           fi
 
       - name: Deploy over SSH
-        if: steps.deploycfg.outputs.configured == 'true'
         uses: appleboy/ssh-action@v1.2.0
         env:
           # Passed through the environment rather than interpolated into the
