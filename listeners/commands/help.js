@@ -1,8 +1,8 @@
 const COMMANDS = [
-  '/jarvis-help - Show this list of commands',
-  '/jarvis-ping - Check latency, uptime, and whether Jarvis is online',
-  '/jarvis-catfact - Get a random cat fact',
-  '/jarvis-joke - Get a random joke',
+  '/jarvis-help-hustlenix - Show this list of commands',
+  '/jarvis-ping-hustlenix - Check latency, uptime, and whether Jarvis is online',
+  '/jarvis-catfact-hustlenix - Get a random cat fact',
+  '/jarvis-joke-hustlenix - Get a random joke',
 ];
 
 const CHAT_HINT = 'You can also just say hi: mention `@Jarvis` in a channel, or DM me directly.';
