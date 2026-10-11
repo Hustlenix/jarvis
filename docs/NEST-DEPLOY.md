@@ -7,7 +7,7 @@ Passing GitHub CI tests does not mean the bot is hosted or live.
 
 Nest's current official quickstart: https://guides.hackclub.app/index.php/Quickstart
 
-The Nest dashboard shows the approved `jarvis` container (VMID 1516) is running.
+The Nest dashboard shows the approved `jarvis` container is running.
 From **Windows PowerShell**, connect as:
 
 ```powershell
@@ -61,6 +61,22 @@ Hack Club workspace. The app-level token needs `connections:write`. The Hack
 Club AI key only enables conversational AI; it cannot fix a broken Slack slash
 command registration. Never commit `.env`, paste it into Slack, or add keys to
 screenshots; rotate any previously exposed keys.
+
+## 3A. Optional: one-command systemd setup
+
+Once Node.js 22+, Git, the repository, and your private `.env` are in place,
+run the included bootstrap script instead of manually assembling a unit:
+
+```bash
+cd "$HOME/jarvis"
+bash deploy/bootstrap-nest.sh
+```
+
+It checks the two Slack credentials, optionally tests your Hack Club AI key,
+installs a systemd service matching your actual account privilege level, and
+starts it. If prerequisites are missing, it stops and prints the next action.
+The script cannot create or acquire Slack credentials and does not repair
+Slack's installed slash-command routing. Do not publish the contents of `.env`.
 
 ## 4. Run the real preflight and Slack test
 
