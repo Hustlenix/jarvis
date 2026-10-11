@@ -106,6 +106,12 @@ jobs:
             npm ci --omit=dev
             # Fail before restart when either Slack token is invalid or Socket Mode cannot connect.
             npm run doctor
+            if grep -qE '^HACKCLUB_AI_API_KEY=.+' .env; then
+              # Test the installed Hack Club AI key without revealing its value.
+              npm run doctor:ai
+            else
+              echo '::warning::HACKCLUB_AI_API_KEY is not configured on Nest; AI chat will be disabled.'
+            fi
 
             # The unit is a system service (User=root), so use systemctl
             # directly. No `|| true`: a failed restart must fail this job.
