@@ -119,6 +119,12 @@ A lot of the work is configuration:
 
 I also understand systemd and always-on deployment better now because of this project.
 
+## Fixing Slack `invalid_service`
+
+Slack's `invalid_service` error happens before the code receives a slash command. See [the re-certification repair checklist](docs/STARDANCE-RECERTIFICATION.md) to reapply the manifest to the existing Hack Club Slack app, reinstall it and verify Nest. The repository file alone does not configure the Slack app.
+
+If slash-command registration is broken, Jarvis also has a fallback through ordinary messages: DM `jarvis ping` or `jarvis help`, or mention `@Jarvis ping` in a channel. These use the same deterministic handlers and do not need an AI key. On the server, run `npm run doctor` to check bot and Socket Mode credentials without printing secrets.
+
 ## Testing Jarvis
 
 I test Jarvis in Hack Club's `#bot-spam` channel.
