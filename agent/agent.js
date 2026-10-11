@@ -48,6 +48,9 @@ function getAgent() {
     name: 'Jarvis',
     instructions: SYSTEM_PROMPT,
     tools: [addEmojiReaction, webSearch, fetchUrl, weather, topNews, setReminder],
+    // GPT-6 Luna supports function calling on Chat Completions only with
+    // reasoning_effort=none. Without this the model may reject tool requests.
+    modelSettings: model === 'openai/gpt-6-luna' ? { reasoning: { effort: 'none' } } : {},
     model: new OpenAIChatCompletionsModel(getClient(), model),
   });
   return cachedAgent;
