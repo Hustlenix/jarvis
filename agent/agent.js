@@ -9,9 +9,8 @@ import {
   RUN_TIMEOUT_MS,
   withTimeout,
 } from './ai.js';
-import { addEmojiReaction, fetchUrl, setReminder, topNews, weather, webSearch } from './tools/index.js';
-
 import { SYSTEM_PROMPT } from './system-prompt.js';
+import { addEmojiReaction, fetchUrl, setReminder, topNews, weather, webSearch } from './tools/index.js';
 
 /** @type {OpenAI | null} */
 let cachedClient = null;
