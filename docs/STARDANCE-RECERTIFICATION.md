@@ -29,12 +29,13 @@ cd /root/jarvis
 git pull --ff-only origin master
 npm ci --omit=dev
 npm run doctor
+npm run doctor:ai # confirms Hack Club AI credentials/model via private .env
 sudo systemctl restart slackbot.service
 sudo systemctl is-active slackbot.service
 sudo journalctl -u slackbot.service -n 60 --no-pager
 ```
 
-Use a different folder/unit name only if that is how you installed it. `npm run doctor` reports whether the bot token and app token work separately; it does **not** prove that slash-command registrations reached Slack or the service is online. Confirm the workspace name printed by the doctor is **Hack Club**.
+Use a different folder/unit name only if that is how you installed it. `npm run doctor` reports whether the bot token and app token work separately; it does **not** prove that slash-command registrations reached Slack or the service is online. `npm run doctor:ai` uses `HACKCLUB_AI_API_KEY` from the private server `.env` to test an authenticated `/chat/completions` call; it requires a valid, unrevoked key and working model, and does not resolve `invalid_service`. If you previously posted the API key publicly or in a chat, rotate it from the Hack Club AI dashboard before deploying. Do not paste the key into GitHub or send it over Slack. Confirm the workspace name printed by the doctor is **Hack Club**.
 
 Check GitHub Actions → `Deploy to Nest`: a green workflow may still skip its deploy step when `NEST_HOST` is missing. Read the actual logs to confirm deployment occurred.
 
