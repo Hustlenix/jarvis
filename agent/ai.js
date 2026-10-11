@@ -7,7 +7,7 @@
  */
 
 const DEFAULT_BASE_URL = 'https://ai.hackclub.com/proxy/v1';
-const DEFAULT_MODEL = 'openai/gpt-4o-mini';
+const DEFAULT_MODEL = 'openai/gpt-6-luna';
 
 /** How long a single upstream request may take before we give up. */
 export const REQUEST_TIMEOUT_MS = 45_000;
