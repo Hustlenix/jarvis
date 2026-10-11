@@ -81,10 +81,11 @@ jobs:
           host: ${{ secrets.NEST_HOST }}
           username: ${{ secrets.NEST_USER }}
           key: ${{ secrets.NEST_SSH_KEY }}
-          # set -euo pipefail so a failed preflight, pull, install or restart
+          envs: NEST_PATH
+          # Fail on errors so preflight, pull, install or restart errors
           # fails the job instead of reporting a green deploy that never happened.
           script: |
-            set -euo pipefail
+            set -eu
 
             if [ -z "${NEST_PATH:-}" ] || [ ! -d "$NEST_PATH" ]; then
               echo "NEST_PATH is unset or is not a directory on the server."
@@ -118,19 +119,28 @@ jobs:
               echo '::warning::HACKCLUB_AI_API_KEY is not configured on Nest; AI chat will be disabled.'
             fi
 
-            # The unit is a system service (User=root), so use systemctl
-            # directly. No `|| true`: a failed restart must fail this job.
-            systemctl restart slackbot.service
+            # Nest may give an ordinary username rather than root.
+            # Select the matching unit manager; missing services fail clearly.
+            if [ "$(id -u)" -eq 0 ]; then
+              unit() { systemctl "$@"; }
+            else
+              unit() { systemctl --user "$@"; }
+            fi
+            if ! unit cat slackbot.service >/dev/null 2>&1; then
+              echo "No slackbot.service in this account's systemd manager."
+              echo "Install the service first using docs/NEST-DEPLOY.md."
+              exit 1
+            fi
+            unit restart slackbot.service
 
-            # Give a slow start a few chances before declaring it dead, while
-            # still catching a crash-loop within a few seconds.
+            # Verify after a restart, then leave troubleshooting in the job log.
             for attempt in 1 2 3 4 5; do
-              if systemctl is-active --quiet slackbot.service; then
+              if unit is-active --quiet slackbot.service; then
                 echo "slackbot.service is active (attempt $attempt)"
                 exit 0
               fi
               echo "not active yet (attempt $attempt); status follows"
-              systemctl status slackbot.service --no-pager --lines=20 || true
+              unit status slackbot.service --no-pager --lines=20 || true
               sleep 3
             done
 
