@@ -45,50 +45,34 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
     steps:
-      # This gate MUST live at step level, not as a job-level `if`.
-      # GitHub does not expose the `secrets` context to `jobs.<id>.if`. A
-      # workflow referencing it there is not merely rejected at runtime - it
-      # fails to parse at all, spawns zero jobs, and reports "likely failed
-      # because of a workflow file issue" with no logs and no jobs to inspect.
-      # `secrets` IS available in `steps.*.env`, so read it there and branch on
-      # a step output instead.
-      - name: Require Nest deployment credentials
+      # The approved Nest container is jarvis@hackclub.app.
+      # Host and username are public; only the private SSH key is a secret.
+      # Nest path is derived from the remote account's actual HOME.
+      - name: Require Nest SSH key
         env:
-          NEST_HOST: ${{ secrets.NEST_HOST }}
-          NEST_USER: ${{ secrets.NEST_USER }}
-          NEST_PATH: ${{ secrets.NEST_PATH }}
           NEST_SSH_KEY: ${{ secrets.NEST_SSH_KEY }}
         run: |
-          missing=0
-          for key in NEST_HOST NEST_USER NEST_PATH NEST_SSH_KEY; do
-            if [ -z "${!key:-}" ]; then
-              echo "::error title=Nest not configured::${key} must be configured as a repository Actions secret."
-              missing=1
-            fi
-          done
-          if [ "$missing" -eq 1 ]; then
-            echo "Jarvis was NOT deployed. See docs/NEST-DEPLOY.md."
+          if [ -z "${NEST_SSH_KEY:-}" ]; then
+            echo "::error title=Nest SSH key missing::Add NEST_SSH_KEY in GitHub Actions secrets."
+            echo "The Nest container exists, but Jarvis has NOT been deployed."
             exit 1
           fi
 
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
-        env:
-          # Passed through the environment rather than interpolated into the
-          # script, so a secret can never become shell syntax.
-          NEST_PATH: ${{ secrets.NEST_PATH }}
         with:
-          host: ${{ secrets.NEST_HOST }}
-          username: ${{ secrets.NEST_USER }}
+          host: hackclub.app
+          username: jarvis
           key: ${{ secrets.NEST_SSH_KEY }}
-          envs: NEST_PATH
           # Fail on errors so preflight, pull, install or restart errors
           # fails the job instead of reporting a green deploy that never happened.
           script: |
             set -eu
 
-            if [ -z "${NEST_PATH:-}" ] || [ ! -d "$NEST_PATH" ]; then
-              echo "NEST_PATH is unset or is not a directory on the server."
+            NEST_PATH="$HOME/jarvis"
+            if [ ! -d "$NEST_PATH/.git" ]; then
+              echo "Jarvis repo is not installed at $NEST_PATH."
+              echo "Follow docs/NEST-DEPLOY.md to perform the first installation."
               exit 1
             fi
             cd "$NEST_PATH"
