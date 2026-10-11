@@ -2,6 +2,7 @@ import { AgentDeps, runAgent } from '../../agent/index.js';
 import { conversationStore } from '../../thread-context/index.js';
 import { buildFeedbackBlocks } from '../views/feedback-builder.js';
 import { buildAiErrorText, extractReply, safeSetStatus } from './shared.js';
+import { handleTextCommand } from './text-command.js';
 
 /**
  * Handle app_mention events and run the agent.
@@ -24,6 +25,9 @@ export async function handleAppMentioned({ client, context, event, logger, say, 
       });
       return;
     }
+
+    // These commands work through an ordinary mention even if Slack slash routing is broken.
+    if (await handleTextCommand(cleanedText, { say, threadTs, client, allowBare: true })) return;
 
     await safeSetStatus(setStatus, logger);
 
