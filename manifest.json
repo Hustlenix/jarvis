@@ -18,27 +18,27 @@
     },
     "slash_commands": [
       {
-        "command": "/jarvis-help",
+        "command": "/jarvis-help-hustlenix",
         "description": "Show the list of available commands",
-        "usage_hint": "/jarvis-help",
+        "usage_hint": "/jarvis-help-hustlenix",
         "should_escape": false
       },
       {
-        "command": "/jarvis-ping",
+        "command": "/jarvis-ping-hustlenix",
         "description": "Check bot latency and uptime",
-        "usage_hint": "/jarvis-ping",
+        "usage_hint": "/jarvis-ping-hustlenix",
         "should_escape": false
       },
       {
-        "command": "/jarvis-catfact",
+        "command": "/jarvis-catfact-hustlenix",
         "description": "Get a random cat fact",
-        "usage_hint": "/jarvis-catfact",
+        "usage_hint": "/jarvis-catfact-hustlenix",
         "should_escape": false
       },
       {
-        "command": "/jarvis-joke",
+        "command": "/jarvis-joke-hustlenix",
         "description": "Get a random joke",
-        "usage_hint": "/jarvis-joke",
+        "usage_hint": "/jarvis-joke-hustlenix",
         "should_escape": false
       }
     ]
