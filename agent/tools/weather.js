@@ -85,5 +85,8 @@ export const weather = tool({
   parameters: z.object({
     city: z.string().describe("The city name, e.g. 'San Francisco' or 'Bengaluru'."),
   }),
-  execute: async ({ city }) => getCityWeather(city, (await import('axios')).default),
+  execute: async ({ city }) => {
+    console.info('[jarvis-tool] get_weather invoked');
+    return getCityWeather(city, (await import('axios')).default);
+  },
 });
