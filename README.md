@@ -1,5 +1,5 @@
 # Jarvis
-I have finished my Slack Bot mission which is named Jarvis, and it can now be acessed in: [ https://slack.com/app_redirect?app=A0BNWE36ME2&team=T0266FRGM](https://slack.com/app_redirect?app=A0BNWE36ME2&team=T0266FRGM)
+I have finished my Slack Bot mission which is named Jarvis, and it can now be acessed AS A [SLACK APP](https://slack.com/app_redirect?app=A0BNWE36ME2&team=T0266FRGM)
 It is live 24/7 for free! 
 
 
@@ -7,48 +7,29 @@ It is live 24/7 for free!
 
 Jarvis currently has these commands:
 
-- `/jarvis-help-hustlenix` — shows the commands
-- `/jarvis-ping-hustlenix` — checks if Jarvis is alive and responding
-- `/jarvis-catfact-hustlenix` — gives you a random cat fact
-- `/jarvis-joke-hustlenix` — gives you a random joke
+- `/jarvis-help` — shows the commands
+- `/jarvis-catfact` — gives you a random cat fact
+- `/jarvis-joke` — gives you a random joke
 
-You can also mention Jarvis in Slack or DM it and ask it something.
+You can also mention Jarvis in Slack or DM it and ask it something. Basically it is an slack app, thats it
 
-For example:
-
-```text
-@Jarvis explain recursion in simple words
-```
-
-The AI part uses the Hack Club AI API.
+The AI part uses the Hack Club AI API; Thnaks to them that they are givig it for free. W HACKCLUB!
 
 ## Why I made this
 
-I made Jarvis mainly because I wanted to understand how a real Slack bot works.
-
-Before this, I had used APIs in websites, but Slack bots work differently because you have events, slash commands, permissions, Socket Mode, bot tokens and a bunch of configuration outside the actual code.
-
-Getting all of those parts to work together was probably the main part of this project for me.
+I made Jarvis mainly because I wanted to understand how a real Slack bot works+make a llm(more like using it, not making it)
+Before this i was using API keys mainly for my projects, like for my websites, ai agents and stuff in N8N, but making a Slack bot was kinda diffrent, cause getting all of those parts to work together was probably the main part of this project for me.
 
 ## How it works
+The bot is basically built with node.js, a slack bolt for js, your own slack bot's app variable and bot variable, and finally a Hack club api key which you can get it for free from: https://ai.hackclub.com/keys
 
-The bot is built with:
-
-- Node.js
-- Slack Bolt for JavaScript
-- Slack Socket Mode
-- Hack Club AI API
-- a few public APIs for things like jokes and cat facts
-
-The main app starts the Slack Bolt client and then loads the different listeners for commands, messages and events.
-
-I separated most of the handlers instead of putting everything inside one huge `index.js` file because it was easier to understand and debug that way.
+The is just an app/agent, just like our 'Starpheus' client which we acesss in our agents and apps section.
 
 ## Running it locally
 
-You need Node.js installed.
+Ig and hope node.js is installed 
 
-Clone the repository:
+Clone the repository using in your git bash, not cmd nor powershell:
 
 ```bash
 git clone https://github.com/Hustlenix/jarvis
@@ -56,7 +37,7 @@ cd jarvis
 npm install
 ```
 
-Create a `.env` file.
+Create an `.env` file, this is just an example env, change those to your API/variables.
 
 ```env
 SLACK_BOT_TOKEN=your_slack_bot_token
@@ -70,69 +51,32 @@ Then run:
 npm start
 ```
 
-If everything is configured properly, Jarvis should connect to Slack.
-
-**Do not commit your `.env` file or API keys.**
+If everything is configured properly, Jarvis should connect to Slack!
 
 ## Keeping it online 24/7
 
-One problem I had was that running the bot on my own computer meant Jarvis went offline whenever I closed the terminal or turned off my PC.
+When i first started making a slack bot, i thought it would be good if i use my own local AI model(qwen 3.1 or smtg), the problem was that it was hanging my whole laptop and also if i close my laptop the ai model also stops running, so i am using hackclub's free AI API
 
-I prepared the Hack Club Nest deployment files, but the bot is **not yet confirmed online**. The latest GitHub deployment requires an approved Nest container and SSH configuration before it can run.
-
-When installed as a service on a reachable host, the bot can:
-
-- keep running after I disconnect from SSH
-- start again when the server reboots
-- restart if the process crashes
-
-The deployment setup is inside the `deploy/` folder and there is more information in `docs/NEST-DEPLOY.md`.
 
 ## Problems I ran into
 
-The Slack setup was more confusing than I expected.
-
-There are different tokens for the bot and Socket Mode, and the bot also needs the correct scopes before commands and messages work properly.
-
-I also had to make sure Jarvis didn't reply to itself and create a bot loop.
-
-Another issue is keeping the bot online all the time. Running `node index.js` on my laptop is not actually 24/7, so I wrote a Nest deployment setup using systemd. I still need to verify it on an approved Nest container.
-
-The AI part also needed error handling because I didn't want the whole Slack bot to crash just because the AI API failed.
+The Slack setup was more confusing than I expected, like that nest, bolt, and config and stuff, was tuff
 
 ## What I learned
 
-The biggest thing I learned from this project is that building the actual command is only one part of making a Slack bot.
-
-A lot of the work is configuration:
-
-- scopes
-- app manifests
-- environment variables
-- Socket Mode
-- events
-- deployment
-- keeping secrets out of GitHub
-
-I learned how systemd services can restart a bot, although the Nest deployment still needs a live test.
-
-## Fixing Slack `invalid_service`
-
-Slack's `invalid_service` error happens before the code receives a slash command. See [the re-certification repair checklist](docs/STARDANCE-RECERTIFICATION.md) to reapply the manifest to the existing Hack Club Slack app, reinstall it and verify Nest. The repository file alone does not configure the Slack app.
-
-If slash-command registration is broken, Jarvis also has a fallback through ordinary messages: DM `jarvis ping` or `jarvis help`, or mention `@Jarvis ping` in a channel. These use the same deterministic handlers and do not need an AI key. On the server, run `npm run doctor` to check bot and Socket Mode credentials without printing secrets.
+The biggest thing I learned from this project is that building the actual command is only one part of making a Slack bot🤣😭, most of it was just config.; I learned how systemd services can restart a bot, although the Nest deployment still needs a live test.
 
 ## Testing Jarvis
 
-I test Jarvis in Hack Club's `#bot-spam` channel.
+I test Jarvis in this [slack app](https://slack.com/app_redirect?app=A0BNWE36ME2&team=T0266FRGM)
 
 Some easy commands to try are:
 
 ```text
-/jarvis-help-hustlenix
-/jarvis-ping-hustlenix
-/jarvis-catfact-hustlenix
-/jarvis-joke-hustlenix
+/jarvis-help
+/jarvis-ping
+/jarvis-catfact
+/jarvis-joke
 ```
 
 You can also mention Jarvis and ask it something.
@@ -148,30 +92,19 @@ deploy/
 docs/
 manifest.json
 ```
-
-`index.js` starts the bot.
-
-`listeners/` contains most of the Slack event and command handlers.
-
-`agent/` contains the AI-related code.
-
-`thread-context/` handles the small amount of conversation context Jarvis remembers.
-
-`deploy/` contains service configuration for running Jarvis on a server. These files do not mean a server deployment is active.
-
 ## AI usage
 
 I used AI while working on this project, and I want to be clear about where I used it.
 
-I used AI coding assistants to help me write and modify parts of the code, debug errors, understand Slack Bolt and Socket Mode, improve error handling, work on the AI API integration, and help with the Nest/systemd deployment configuration.
+I used AI coding assistants to help me write and modify few parts of my code, debug errors, understand Slack Bolt and Socket Mode, improve error handling, work on the AI API integration, and help with the Nest/systemd deployment configuration.
 
-AI also helped me review the project and find issues before resubmitting it to Stardance.
+AI also helped me review the project, like crash testing it to the core!
 
-An earlier version of my README was also heavily AI-assisted. The Shipwright reviewing my first submission pointed this out and asked me to rewrite it in my own words, so I replaced it.
+An earlier version of my README was so heavily AI-assisted, that they regected it. The Shipwright reviewing my first submission pointed this out and asked me to rewrite it in my own words, so I replaced it.
 
-Jarvis itself also intentionally uses AI as one of its features. Messages sent to its AI chat feature are passed to the Hack Club AI API and the response is returned inside Slack.
+What is ironic is that, Jarvis itself also intentionally uses AI as one of its features. Messages sent to its AI chat feature are passed to the Hack Club AI API and the response is returned inside Slack.
 
-I personally configured the Slack app, tested the commands in Slack, worked through deployment problems, connected the required tokens/API keys, tested the bot, and decided how I wanted the project to work.
+I personally configured the Slack app, tested the commands in Slack, worked through deployment problems, connected the required tokens/API keys, tested the bot, and decided how I wanted the project to work, with no ai assistance, fr, ng
 
 ## License
 
