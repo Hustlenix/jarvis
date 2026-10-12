@@ -1,5 +1,5 @@
 # Jarvis
-I have finished my Slack Bot mission which is named Jarvis, and it can now be acessed in: #slack[ https://slack.com/app_redirect?app=A0BNWE36ME2&team=T0266FRGM](https://slack.com/app_redirect?app=A0BNWE36ME2&team=T0266FRGM)
+I have finished my Slack Bot mission which is named Jarvis, and it can now be acessed in: [ https://slack.com/app_redirect?app=A0BNWE36ME2&team=T0266FRGM](https://slack.com/app_redirect?app=A0BNWE36ME2&team=T0266FRGM)
 It is live 24/7 for free! 
 
 
