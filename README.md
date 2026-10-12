@@ -1,10 +1,7 @@
 # Jarvis
+I have finished my Slack Bot mission which is named Jarvis, and it can now be acessed in: #slack[ https://slack.com/app_redirect?app=A0BNWE36ME2&team=T0266FRGM](https://slack.com/app_redirect?app=A0BNWE36ME2&team=T0266FRGM)
+It is live 24/7 for free! 
 
-Jarvis is a Slack bot I made for the Hack Club workspace for the Stardance Slack Bot mission.
-
-I wanted to make something that was more than just a bot that says "pong", so Jarvis has normal slash commands and can also reply using AI when you mention it or message it.
-
-It runs using Slack Bolt with Node.js and uses Socket Mode, so I don't need to expose a webhook server just to receive Slack events.
 
 ## What it can do
 
