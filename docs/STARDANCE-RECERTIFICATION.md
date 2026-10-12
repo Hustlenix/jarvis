@@ -66,7 +66,7 @@ Older Slack SDK issue with the same error: https://github.com/slackapi/node-slac
 
 ## October 11 reviewer feedback: avoid duplicate Jarvis bots
 
-The reviewer also requested: (1) a README rewritten by the project owner in their own words (do not pass off machine-generated text as handwritten), (2) a banner showing a **real Slack screenshot of a successful reply**, and (3) distinctive slash commands. The code and repository manifest use the owner-specific `/lalith-jarvis-*` names. The live dashboard must be checked independently because the repository manifest does not publish commands automatically.
+The reviewer also requested: (1) a README rewritten by the project owner in their own words (do not pass off machine-generated text as handwritten), (2) a banner showing a **real Slack screenshot of a successful reply**, and (3) distinctive slash commands. On October 13, the existing app dashboard was updated to the owner-specific `/lalith-jarvis-*` names and the App Manifest now displays the same names. The installed workspace token still lacks the `commands` scope; Slack requires reinstalling the existing app before slash-command delivery can be verified.
 
 The October 13 identity audit verified that the existing Stardance-linked app is `A0BNWE36ME2`, and both Nest credentials belong to it in Hack Club; the bot user is `U0BNS6CRM9R`. Re-run `npm run doctor` after any credential or installation change. The earlier mismatch with `Jarvis (local)` was historical and is not the current Nest identity.
 
