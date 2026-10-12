@@ -1,9 +1,6 @@
-const COMMANDS = [
-  '`/jarvis-help` — show all available commands',
-  '`/jarvis-ping` — check bot latency',
-  '`/jarvis-catfact` — get a random cat fact',
-  '`/jarvis-joke` — get a random joke',
-];
+import { COMMANDS } from '../commands/names.js';
+
+const COMMAND_LINES = COMMANDS.map(({ slash, description }) => `\`${slash}\` — ${description}`);
 
 /**
  * Build the App Home Block Kit view.
@@ -27,7 +24,7 @@ export function buildAppHomeView() {
           "I'm a friendly AI bot for the Hack Club Slack. DM me or mention me in any channel " +
           "and I'll answer questions, remember our conversations, and help you out.\n\n" +
           '*Commands:*\n' +
-          COMMANDS.join('\n'),
+          COMMAND_LINES.join('\n'),
       },
     },
     { type: 'divider' },

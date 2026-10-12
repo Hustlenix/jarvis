@@ -2,18 +2,15 @@ import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
 import { buildHelpText, handleHelp } from '../../../listeners/commands/help.js';
+import { COMMAND_NAMES } from '../../../listeners/commands/names.js';
 
 describe('buildHelpText', () => {
   it('lists every available command', () => {
     const text = buildHelpText();
-    for (const command of [
-      '/jarvis-help-hustlenix',
-      '/jarvis-ping-hustlenix',
-      '/jarvis-catfact-hustlenix',
-      '/jarvis-joke-hustlenix',
-    ]) {
+    for (const command of Object.values(COMMAND_NAMES)) {
       assert.ok(text.includes(command), `missing ${command}`);
     }
+    assert.doesNotMatch(text, /\/jarvis-(?:help|ping|catfact|joke)(?:\s|\b)/);
   });
 });
 

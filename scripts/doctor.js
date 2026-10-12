@@ -1,6 +1,7 @@
 import 'dotenv/config';
 
 import { checkEnvironment } from '../config.js';
+import { COMMAND_NAMES } from '../listeners/commands/names.js';
 import { verifySlackInstallation } from './slack-installation.js';
 
 const validation = checkEnvironment();
@@ -53,7 +54,7 @@ try {
   await probe('apps.connections.open', appToken);
   console.log('[doctor] App token / Socket Mode connection: VALID');
   console.log('[doctor] This cannot verify command installation or whether the Nest service is running.');
-  console.log('[doctor] Next: test /jarvis-ping and Jarvis DM "jarvis ping" in the target workspace.');
+  console.log(`[doctor] Next: test ${COMMAND_NAMES.ping} and Jarvis DM "jarvis ping" in the target workspace.`);
 } catch (err) {
   // Never print raw HTTP payloads or the secret Socket Mode WebSocket URL.
   console.error(`[doctor] FAILED: ${err instanceof Error ? err.message : 'network/API error'}`);

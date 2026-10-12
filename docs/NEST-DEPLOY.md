@@ -90,8 +90,9 @@ node index.js
 valid Hack Club AI key. `npm run doctor` checks the Slack tokens but does not
 prove that slash commands are registered or that the bot is live.
 
-While `node index.js` is running, test `/jarvis-ping`, `/jarvis-help`,
-`/jarvis-catfact`, `/jarvis-joke` and `@Jarvis ping` in Hack Club
+While `node index.js` is running, test `/lalith-jarvis-ping`,
+`/lalith-jarvis-help`, `/lalith-jarvis-catfact`, `/lalith-jarvis-joke`,
+and `@Jarvis ping` in Hack Club
 `#bot-spam`. Also DM `jarvis ping`. If mentions/DMs work but slash commands
 say `invalid_service`, apply `manifest.json` to the **existing** Jarvis app
 at https://api.slack.com/apps, ensure Socket Mode and permissions are correct,
@@ -191,12 +192,11 @@ complete agent tool chain, Slack delivery, or that the correct Slack bot ID
 receives the messages. Test with a simple question and a tool-based question
 (e.g. weather) in Hack Club `#bot-spam`.
 
-**Identity warning:** The earlier verified Nest bot ID is `U0BP5DAB3QC`,
-whereas the publicly tested Jarvis bot was `U0BNS6CRM9R`. These are
-different Slack app accounts. Upgrading this Nest code affects only the app
-associated with the server's actual `SLACK_BOT_TOKEN`. Confirm this with
-`npm run doctor` (prints no token values) before promising the reviewer
-that the public Jarvis uses GPT-6 Luna.
+**Identity history:** Earlier diagnostics used a second Jarvis app. The
+October 13 audit verified that the current Nest bot and Socket Mode token
+belong to the Stardance-linked app `A0BNWE36ME2` in Hack Club, with bot user
+`U0BNS6CRM9R`. Re-run `npm run doctor` after credential or installation
+changes before claiming the deployment still has that identity.
 
 Never print keys from `.env`, publish them in Slack/chat, or commit them to
 the repo. Revoke and rotate any key previously exposed.

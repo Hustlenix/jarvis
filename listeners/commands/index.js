@@ -1,6 +1,7 @@
 import { handleCatFact } from './catfact.js';
 import { handleHelp } from './help.js';
 import { handleJoke } from './joke.js';
+import { COMMAND_NAMES } from './names.js';
 import { handlePing } from './ping.js';
 
 /**
@@ -10,20 +11,20 @@ import { handlePing } from './ping.js';
  * @returns {void}
  */
 export function register(app) {
-  app.command('/jarvis-help-hustlenix', async (args) => {
-    args.logger.info('[jarvis-delivery] received /jarvis-help-hustlenix');
+  app.command(COMMAND_NAMES.help, async (args) => {
+    args.logger.info(`[jarvis-delivery] received ${COMMAND_NAMES.help}`);
     await handleHelp(args);
   });
-  app.command('/jarvis-ping-hustlenix', async (args) => {
-    args.logger.info('[jarvis-delivery] received /jarvis-ping-hustlenix');
+  app.command(COMMAND_NAMES.ping, async (args) => {
+    args.logger.info(`[jarvis-delivery] received ${COMMAND_NAMES.ping}`);
     await handlePing(args);
   });
-  app.command('/jarvis-catfact-hustlenix', async (args) => {
-    args.logger.info('[jarvis-delivery] received /jarvis-catfact-hustlenix');
+  app.command(COMMAND_NAMES.catfact, async (args) => {
+    args.logger.info(`[jarvis-delivery] received ${COMMAND_NAMES.catfact}`);
     await handleCatFact(args);
   });
-  app.command('/jarvis-joke-hustlenix', async (args) => {
-    args.logger.info('[jarvis-delivery] received /jarvis-joke-hustlenix');
+  app.command(COMMAND_NAMES.joke, async (args) => {
+    args.logger.info(`[jarvis-delivery] received ${COMMAND_NAMES.joke}`);
     await handleJoke(args);
   });
 }

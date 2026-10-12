@@ -1,9 +1,4 @@
-const COMMANDS = [
-  '/jarvis-help-hustlenix - Show this list of commands',
-  '/jarvis-ping-hustlenix - Check latency, uptime, and whether Jarvis is online',
-  '/jarvis-catfact-hustlenix - Get a random cat fact',
-  '/jarvis-joke-hustlenix - Get a random joke',
-];
+import { COMMAND_HELP_LINES } from './names.js';
 
 const CHAT_HINT = 'You can also just say hi: mention `@Jarvis` in a channel, or DM me directly.';
 
@@ -11,7 +6,7 @@ const CHAT_HINT = 'You can also just say hi: mention `@Jarvis` in a channel, or 
  * @returns {string}
  */
 export function buildHelpText() {
-  return `👋 Hi, I'm Jarvis.\n\n*Commands*\n${COMMANDS.join('\n')}\n\n${CHAT_HINT}`;
+  return `👋 Hi, I'm Jarvis.\n\n*Commands*\n${COMMAND_HELP_LINES.join('\n')}\n\n${CHAT_HINT}`;
 }
 
 /**

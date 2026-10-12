@@ -1,6 +1,7 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
+import { COMMAND_NAMES } from '../../../listeners/commands/names.js';
 import { buildAppHomeView } from '../../../listeners/views/app-home-builder.js';
 
 describe('buildAppHomeView', () => {
@@ -21,7 +22,7 @@ describe('buildAppHomeView', () => {
     const view = buildAppHomeView();
     const mrkdwnTexts = view.blocks.filter((b) => b.type === 'section').map((b) => b.text.text);
     const commandsText = mrkdwnTexts.join('\n');
-    for (const command of ['/jarvis-help', '/jarvis-ping', '/jarvis-catfact', '/jarvis-joke']) {
+    for (const command of Object.values(COMMAND_NAMES)) {
       assert.ok(commandsText.includes(command), `missing ${command}`);
     }
   });

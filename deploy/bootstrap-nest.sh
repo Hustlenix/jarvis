@@ -117,4 +117,4 @@ EOF
 fi
 
 echo "[nest] Process started. Live Slack slash commands still require the existing app to be installed correctly."
-echo "[nest] Test /jarvis-ping and @Jarvis ping in Hack Club #bot-spam before requesting certification."
+echo "[nest] Test /lalith-jarvis-ping and @Jarvis ping in Hack Club #bot-spam before requesting certification."

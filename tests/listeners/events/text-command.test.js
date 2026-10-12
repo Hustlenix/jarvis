@@ -23,7 +23,7 @@ describe('plain-text command fallback', () => {
     assert.equal(handled, true);
     assert.equal(sent.length, 1);
     assert.equal(sent[0].thread_ts, '123.456');
-    assert.match(sent[0].text, /\/jarvis-ping-hustlenix/);
+    assert.match(sent[0].text, /\/lalith-jarvis-ping/);
   });
 
   it('handles ping with real client auth.test and retains thread', async () => {
